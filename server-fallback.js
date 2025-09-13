@@ -914,6 +914,7 @@ app.listen(PORT, () => {
     console.log(`✅ Health Check: http://localhost:${PORT}/api/health`);
     console.log(`🔑 Login: POST http://localhost:${PORT}/api/auth/login`);
     console.log(`📈 Dashboard: GET http://localhost:${PORT}/api/data/dashboard`);
+    console.log(`🔐 JWT_SECRET configured: ${!!process.env.JWT_SECRET}`);
 });
 
 module.exports = app;
