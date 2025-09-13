@@ -633,23 +633,43 @@ app.get('/api/health', (req, res) => {
 // Authentication endpoints
 app.post('/api/auth/login', async (req, res) => {
     try {
+        console.log('=== LOGIN ATTEMPT ===');
+        console.log('Request body:', JSON.stringify(req.body));
+        console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+        console.log('JWT_SECRET length:', process.env.JWT_SECRET ? process.env.JWT_SECRET.length : 0);
+        
         const { email, password } = req.body;
 
         if (!email || !password) {
+            console.log('Missing email or password');
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
+        console.log('Looking for user with email:', email);
         const user = mockData.users.find(u => u.email === email);
         if (!user) {
+            console.log('User not found');
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
+        console.log('User found, checking password...');
         const isValidPassword = await bcrypt.compare(password, user.password_hash);
+        console.log('Password valid:', isValidPassword);
+        
         if (!isValidPassword) {
+            console.log('Invalid password');
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
+        console.log('Finding tenant...');
         const tenant = mockData.tenants.find(t => t.id === user.tenant_id);
+        console.log('Tenant found:', !!tenant);
+
+        console.log('Creating JWT token...');
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET is not set!');
+            return res.status(500).json({ error: 'Server configuration error' });
+        }
 
         const token = jwt.sign(
             { 
@@ -662,6 +682,9 @@ app.post('/api/auth/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
+        console.log('JWT token created successfully');
+        console.log('=== LOGIN SUCCESS ===');
+
         res.json({
             token,
             user: {
@@ -673,8 +696,12 @@ app.post('/api/auth/login', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error('=== LOGIN ERROR ===');
+        console.error('Error details:', error);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('=== END LOGIN ERROR ===');
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
 
