@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: shopify-analytics-dashboard
+    env: node
+    plan: free
+    buildCommand: npm install && npm run install-client && npm run build
+    startCommand: node server-fallback.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: ./database.sqlite
+      - key: ADMIN_EMAIL
+        value: admin@xenoanalytics.com
+      - key: ADMIN_PASSWORD
+        value: admin123
+    disk:
+      name: shopify-data
+      mountPath: /opt/render/project/src
+      sizeGB: 1
