@@ -865,13 +865,28 @@ app.post('/api/webhooks/test', (req, res) => {
     res.json({ success: true, message: 'Webhook received successfully' });
 });
 
-// Serve static files from public directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve the dashboard HTML for root path
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// Serve React build files in production
+if (process.env.NODE_ENV === 'production') {
+    // Serve static files from React build
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    
+    // Serve React app for all non-API routes
+    app.get('*', (req, res) => {
+        // Skip API routes
+        if (req.path.startsWith('/api')) {
+            return next();
+        }
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+} else {
+    // Development: serve static files from public directory
+    app.use(express.static(path.join(__dirname, 'public')));
+    
+    // Serve the dashboard HTML for root path
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
