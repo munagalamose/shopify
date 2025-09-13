@@ -9,7 +9,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: JWT_SECRET
-        generateValue: true
+        value: your-super-secret-jwt-key-for-production-2024
       - key: DB_PATH
         value: ./database.sqlite
       - key: ADMIN_EMAIL
