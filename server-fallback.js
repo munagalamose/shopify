@@ -8,10 +8,12 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Fix trust proxy for Render deployment
+// Fix trust proxy for Render deployment (MUST be before other middleware)
 app.set('trust proxy', 1);
+
+// Use environment port or fallback
+const PORT = process.env.PORT || 5000;
 
 // In-memory data store (fallback for SQLite issues) - Comprehensive Shopify Store Data
 const mockData = {
