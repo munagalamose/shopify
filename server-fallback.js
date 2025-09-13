@@ -10,6 +10,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Ensure PORT is a number
+const port = parseInt(PORT, 10);
+
 // In-memory data store (fallback for SQLite issues) - Comprehensive Shopify Store Data
 const mockData = {
   users: [
@@ -902,13 +905,13 @@ app.use('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Shopify Insights Server running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`🚀 Shopify Insights Server running on port ${port}`);
     console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-    console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
-    console.log(`✅ Health Check: http://localhost:${PORT}/api/health`);
-    console.log(`🔑 Login: POST http://localhost:${PORT}/api/auth/login`);
-    console.log(`📈 Dashboard: GET http://localhost:${PORT}/api/data/dashboard`);
+    console.log(`🔗 API Base URL: http://localhost:${port}/api`);
+    console.log(`✅ Health Check: http://localhost:${port}/api/health`);
+    console.log(`🔑 Login: POST http://localhost:${port}/api/auth/login`);
+    console.log(`📈 Dashboard: GET http://localhost:${port}/api/data/dashboard`);
 });
 
 module.exports = app;
