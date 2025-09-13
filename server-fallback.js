@@ -965,6 +965,7 @@ app.listen(PORT, () => {
     console.log(`🔑 Login: POST http://localhost:${PORT}/api/auth/login`);
     console.log(`📈 Dashboard: GET http://localhost:${PORT}/api/data/dashboard`);
     console.log(`🔐 JWT_SECRET configured: ${!!process.env.JWT_SECRET}`);
+    console.log(`📦 Deployment timestamp: ${new Date().toISOString()}`);
 });
 
 module.exports = app;
