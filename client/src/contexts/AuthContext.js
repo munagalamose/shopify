@@ -15,7 +15,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = process.env.REACT_APP_API_URL || (
+    process.env.NODE_ENV === 'production' 
+      ? '/api'  // Use relative URL in production
+      : 'http://localhost:5000/api'  // Use localhost in development
+  );
 
   useEffect(() => {
     if (token) {
