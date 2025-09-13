@@ -630,6 +630,29 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Test endpoint for debugging
+app.post('/api/test/login', (req, res) => {
+    try {
+        console.log('=== TEST LOGIN ENDPOINT ===');
+        console.log('Request body:', JSON.stringify(req.body));
+        console.log('Content-Type:', req.headers['content-type']);
+        console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+        console.log('mockData.users length:', mockData.users.length);
+        console.log('First user email:', mockData.users[0]?.email);
+        
+        res.json({
+            success: true,
+            message: 'Test endpoint working',
+            bodyReceived: req.body,
+            jwtSecretExists: !!process.env.JWT_SECRET,
+            usersCount: mockData.users.length
+        });
+    } catch (error) {
+        console.error('Test endpoint error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Authentication endpoints
 app.post('/api/auth/login', async (req, res) => {
     try {
