@@ -1,0 +1,42 @@
+{
+  "name": "shopify-analytics-dashboard",
+  "description": "Multi-tenant Shopify Analytics Dashboard with React frontend",
+  "repository": "https://github.com/munagalamose/shopify",
+  "logo": "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/shopify.svg",
+  "keywords": ["shopify", "analytics", "dashboard", "react", "express"],
+  "image": "heroku/nodejs",
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "JWT_SECRET": {
+      "description": "JWT secret key for authentication",
+      "generator": "secret"
+    },
+    "ADMIN_EMAIL": {
+      "description": "Admin email for login",
+      "value": "admin@xenoanalytics.com"
+    },
+    "ADMIN_PASSWORD": {
+      "description": "Admin password for login",
+      "value": "admin123"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [],
+  "scripts": {
+    "postdeploy": "echo 'Deployment completed successfully'"
+  }
+}
