@@ -13,7 +13,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Use environment port or fallback
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // In-memory data store (fallback for SQLite issues) - Comprehensive Shopify Store Data
 const mockData = {
@@ -960,10 +960,10 @@ app.use('*', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Shopify Insights Server running on port ${PORT}`);
     console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-    console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
-    console.log(`✅ Health Check: http://localhost:${PORT}/api/health`);
-    console.log(`🔑 Login: POST http://localhost:${PORT}/api/auth/login`);
-    console.log(`📈 Dashboard: GET http://localhost:${PORT}/api/data/dashboard`);
+    console.log(`🔗 API Base URL: /api`);
+    console.log(`✅ Health Check: /api/health`);
+    console.log(`🔑 Login: POST /api/auth/login`);
+    console.log(`📈 Dashboard: GET /api/data/dashboard`);
     console.log(`🔐 JWT_SECRET configured: ${!!process.env.JWT_SECRET}`);
     console.log(`📦 Deployment timestamp: ${new Date().toISOString()}`);
     console.log(`🔄 Force redeploy trigger: ${Math.random().toString(36).substring(7)}`);
