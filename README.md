@@ -1,6 +1,28 @@
 # 🛍️ Shopify Analytics Dashboard
 
-A comprehensive multi-tenant Shopify analytics platform with interactive dashboard, product catalog management, and real-time data insights. Built with Node.js, React, SQLite, and modern web technologies.
+A comprehensive multi-tenant Shopify analytics dashboard built with React and Node.js, featuring real-time data ingestion, interactive charts, and secure authentication.
+
+## 🏗️ Architecture
+
+### System Overview
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Shopify API   │    │   React Client  │    │  Express Server │
+│                 │    │                 │    │                 │
+│ • Webhooks      │───▶│ • Dashboard     │───▶│ • REST API      │
+│ • Product Data  │    │ • Auth System   │    │ • Authentication│
+│ • Orders        │    │ • Charts        │    │ • Data Processing│
+│ • Customers     │    │ • Real-time UI  │    │ • Webhook Handler│
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                                        │
+                                               ┌─────────────────┐
+                                               │ SQLite Database │
+                                               │                 │
+                                               │ • Multi-tenant  │
+                                               │ • Normalized    │
+                                               │ • Indexed       │
+                                               └─────────────────┘
+```
 
 ## 🚀 Features
 
@@ -35,36 +57,18 @@ A comprehensive multi-tenant Shopify analytics platform with interactive dashboa
 - npm or yarn
 - Git
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js** (v14 or higher) - [Download here](https://nodejs.org/)
-- **npm** (comes with Node.js)
-- **Git** (optional, for cloning)
+- Node.js 16+ and npm
+- Git
 
-### 🖥️ Setup for New Laptop/Computer
-
-#### Step 1: Install Node.js
-1. Download Node.js from [nodejs.org](https://nodejs.org/)
-2. Install the LTS version (includes npm)
-3. Verify installation:
+### Installation
 ```bash
-node --version
-npm --version
-```
+# Clone the repository
+git clone https://github.com/munagalamose/shopify.git
+cd shopify
 
-#### Step 2: Get the Project
-```bash
-# If you have the project folder already:
-cd path/to/Shopify
-
-# Or clone from repository:
-git clone <repository-url>
-cd shopify-insights
-```
-
-#### Step 3: Install Dependencies
-```bash
 # Install backend dependencies
 npm install
 
@@ -72,32 +76,147 @@ npm install
 cd client
 npm install
 cd ..
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your configuration
+
+# Start development servers
+npm run dev        # Backend on port 5000
+npm run dev-client # Frontend on port 3000
 ```
 
-#### Step 4: Start the Application
+### Production Build
 ```bash
-# Method 1: Start both servers manually (RECOMMENDED)
-# Terminal 1 - Backend Server:
-node server-fallback.js
+# Build React frontend
+npm run build
 
-# Terminal 2 - React Frontend:
-cd client
+# Start production server
 npm start
 ```
 
-#### Step 5: Access Your Dashboard
-- **Frontend**: http://localhost:3001
-- **Backend API**: http://localhost:5000
-- **Login Credentials**:
-  - Email: `admin@xenoanalytics.com`
-  - Password: `admin123`
+## 🔌 API Endpoints
 
-### 🔄 Restarting Servers
+### Authentication
+```http
+POST /api/auth/login      # User login
+POST /api/auth/logout     # User logout
+GET  /api/auth/verify     # Verify JWT token
+```
 
-If you need to restart the servers:
+### Dashboard Data
+```http
+GET /api/data/dashboard      # Main dashboard metrics
+GET /api/data/products       # Product analytics
+GET /api/data/top-customers  # Customer insights
+GET /api/data/orders-by-date # Order trends
+GET /api/data/revenue-trends # Revenue analytics
+```
 
-**Windows:**
-```bash
+### Webhook Endpoints
+```http
+POST /api/webhooks/customers/create
+POST /api/webhooks/customers/update
+POST /api/webhooks/orders/create
+POST /api/webhooks/orders/updated
+POST /api/webhooks/products/create
+POST /api/webhooks/products/update
+```
+
+### Health & Monitoring
+```http
+GET /api/health         # Health check
+GET /api/status         # System status
+```
+
+## 🗄️ Database Schema
+
+### Core Tables
+
+#### Users
+```sql
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    role TEXT DEFAULT 'user',
+    tenant_id INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Products
+```sql
+CREATE TABLE products (
+    id INTEGER PRIMARY KEY,
+    tenant_id INTEGER,
+    shopify_product_id TEXT,
+    title TEXT NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2),
+    inventory_quantity INTEGER,
+    category TEXT,
+    image_url TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Customers
+```sql
+CREATE TABLE customers (
+    id INTEGER PRIMARY KEY,
+    tenant_id INTEGER,
+    shopify_customer_id TEXT,
+    email TEXT,
+    first_name TEXT,
+    last_name TEXT,
+    total_spent DECIMAL(10,2) DEFAULT 0,
+    orders_count INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### Orders
+```sql
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY,
+    tenant_id INTEGER,
+    shopify_order_id TEXT,
+    customer_id INTEGER,
+    total_price DECIMAL(10,2),
+    status TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## ⚠️ Known Limitations & Assumptions
+
+### Current Limitations
+1. **Database**: Uses SQLite for development - consider PostgreSQL for production scale
+2. **File Storage**: Product images stored as URLs - no local file storage
+3. **Real-time Updates**: Polling-based updates - WebSocket implementation pending
+4. **Single Currency**: All monetary values in USD
+5. **Mobile Responsive**: Optimized for desktop - mobile improvements needed
+
+### Assumptions
+1. **Shopify Integration**: Assumes standard Shopify webhook format
+2. **Time Zone**: Server time zone used for all timestamps
+3. **Data Retention**: No automatic data archiving or cleanup
+4. **User Management**: Single admin user model - no user registration flow
+5. **Authentication**: JWT-based with 24-hour expiration
+
+### Production Considerations
+1. **Database Migration**: Migrate from SQLite to PostgreSQL/MySQL
+2. **Caching**: Implement Redis for session management
+3. **Load Balancing**: Configure for horizontal scaling
+4. **Monitoring**: Add comprehensive logging (DataDog, New Relic)
+5. **Backup Strategy**: Implement automated database backups
+6. **SSL/TLS**: Ensure HTTPS in production
+7. **Environment Separation**: Separate staging and production
+
+**Demo Login Credentials:**
+- Email: `admin@xenoanalytics.com`
+- Password: `admin123`
 # Stop all Node processes
 taskkill /f /im node.exe
 
