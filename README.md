@@ -1,5 +1,8 @@
 # 🛍️ Shopify Analytics Dashboard
 
+Live demo: https://web-production-de9bb.up.railway.app
+
+
 A comprehensive multi-tenant Shopify analytics dashboard built with React and Node.js, featuring real-time data ingestion, interactive charts, and secure authentication.
 
 ## 🏗️ Architecture
@@ -350,7 +353,7 @@ Render is a modern cloud platform that makes deployment simple and free for smal
 
 #### Prerequisites
 1. **GitHub Account**: Your code needs to be in a GitHub repository
-2. **Render Account**: Sign up at [render.com](https://render.com)
+2. **Render Account**: Sign up at [railway.com](https://railway.com)
 
 #### Step 1: Prepare Your Repository
 ```bash
@@ -385,7 +388,7 @@ ADMIN_PASSWORD=admin123
 #### Step 4: Deploy
 - Click **"Create Web Service"**
 - Render will automatically build and deploy your app
-- Your app will be available at: `https://your-app-name.onrender.com`
+- Your app will be available at: `https://your-app-name.railway.com`
 
 #### 🎯 Quick Deploy with render.yaml
 We've included a `render.yaml` file for one-click deployment:
@@ -738,9 +741,8 @@ MIT License - see LICENSE file for details
 ## 📞 Support
 
 For questions or support, please contact:
-- Email: support@xenoanalytics.com
-- Documentation: [Link to detailed docs]
-- Issues: [GitHub Issues URL]
+- Email: munagalamoses89@email.com
+- Issues: [https://github.com/munagalamose/shopify.git]
 
 ---
 
